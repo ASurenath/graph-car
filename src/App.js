@@ -27,10 +27,10 @@ function App() {
           <h1 className="text-white">
             Coordinate race <i className="fa-solid fa-car-side"></i>
           </h1>
-          <Button variant="success" onClick={() => setPage("game1-positive")}>
+          <Button variant="warning" onClick={() => setPage("game1-positive")}>
             Positive quadrant
           </Button>
-          <Button variant="success" onClick={() => setPage("game1-all")}>All quadrants</Button>
+          <Button variant="warning" onClick={() => setPage("game1-all")}>All quadrants</Button>
           <OverlayTrigger trigger="click" placement="right" overlay={popover}>
             <Button>
               {" "}
