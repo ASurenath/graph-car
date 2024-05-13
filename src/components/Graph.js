@@ -31,7 +31,7 @@ function Graph({x1, x2, y1, y2, carX, carY, carAngle, flag, flagType, flagX, fla
   const renderXticks = () => {
     const ticks = [];
     for (let i = x1; i <= x2; i++) {
-      i!=x1&&ticks.push(
+      i!=x1&&i!=x2&&ticks.push(
         
           <text
             x={((i - x1) / (x2 - x1)) * 100 + "%"}
@@ -51,7 +51,7 @@ function Graph({x1, x2, y1, y2, carX, carY, carAngle, flag, flagType, flagX, fla
   const renderYticks = () => {
     const ticks = [];
     for (let i = y1; i <= y2; i++) {
-      i!=y1 &&i!= 0&&ticks.push(
+      i!=y1&&i!=y2 &&i!= 0&&ticks.push(
            (
             <text
               x={findXPosPercent(0)}
@@ -77,7 +77,7 @@ function Graph({x1, x2, y1, y2, carX, carY, carAngle, flag, flagType, flagX, fla
   const renderVerticleLines = () => {
     const lines = [];
     for (let i = x1; i <= x2; i++) {
-      i!=x1&&lines.push(
+      i!=x1&&i!= x2&&lines.push(
         
         <line
           x1={((i - x1) / (x2 - x1)) * 100 + "%"}
@@ -99,7 +99,7 @@ function Graph({x1, x2, y1, y2, carX, carY, carAngle, flag, flagType, flagX, fla
   const renderHorizentalLines = () => {
     const lines = [];
     for (let i = y1; i <= y2; i++) {
-      i!=y1&&lines.push(
+      i!=y1&&i!=y2&&lines.push(
         <line
           x1={"0%"}
           y1={((i - y2) / (y1 - y2)) * 100 + "%"}
@@ -141,22 +141,22 @@ function Graph({x1, x2, y1, y2, carX, carY, carAngle, flag, flagType, flagX, fla
 <image x={findXPosPercent(flagX)} y={findYPosPercent(flagY+0.7)} height={0.7/(x2-x1)*100+"%"} href={flagType=="final"?"finalflag.png":"flag.png"}/></>
 }  
 
-{coordinates.map((coordinate)=><React.Fragment key={`(${coordinate.x},${coordinate.y})`}> 
+{paths.map((path,id)=> path&&<line key={`(${path.x1},${path.y1})to(${path.x2},${path.y2})-${id}`} x1={findXPosPercent(path.x1)} y1={findYPosPercent(path.y1)} x2={findXPosPercent(path.x2)} y2={findYPosPercent(path.y2)} style={{stroke:path.color,strokeWidth:3}}/>
+)}
+
+{coordinates.map((coordinate,id)=><React.Fragment key={`(${coordinate.x},${coordinate.y})-${id}`}> 
 <circle cx={findXPosPercent(coordinate.x)} cy={findYPosPercent(coordinate.y)} r="5" fill={coordinate.color}/>
 <text x={findXPosPercent(coordinate.x)} y={findYPosPercent(coordinate.y)} style={{fontSize:25}} fill={coordinate.color}>({coordinate.x},{coordinate.y})</text>
 </React.Fragment>)}
-{paths.map((path)=> <line key={`(${path.x1},${path.y1})to(${path.x2},${path.y2})`} x1={findXPosPercent(path.x1)} y1={findYPosPercent(path.y1)} x2={findXPosPercent(path.x2)} y2={findYPosPercent(path.y2)} style={{stroke:path.color,strokeWidth:3}}/>
-)}
         <image
           x={findCarXPosPercent(carX)}
           y={findCarYPosPercent(carY)}
           height={1/(x2-x1)*100+"%"}
           href="car.png"
-          style={{transform:`rotate(${carAngle}deg)`,
+          style={{transform:`rotate(${-carAngle}deg)`,
           transformOrigin: `${findCarXPosPercent(carX+0.5)} ${findCarYPosPercent(carY-0.5)}`}}
         />
       </svg>
-
       {children}
     </div>
   );
