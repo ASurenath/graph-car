@@ -191,7 +191,7 @@ function Game2({ X1, X2, Y1, Y2, setPage,transitType,isTimer,timer,totalLaps }) 
           setCarX(x);
           setCarY(y);
 
-          if (x == flagPos[0], y == flagPos[1]) {
+          if (x == flagPos[0] && y == flagPos[1]) {
             coordinates.push({ x,y, color: "limegreen" });
             paths.push({ x1: x1, y1: y1, x2: x, y2: y, color: "limegreen" });
           } else {

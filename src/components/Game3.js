@@ -196,7 +196,7 @@ function Game3({ X1, X2, Y1, Y2, setPage,transitType,isTimer,timer,totalLaps }) 
           setCarY(y);
           // // console.log("x,y", x, y,carX,carY);
 
-          if (x == targetPos[0], y == targetPos[1]) {
+          if (x == targetPos[0]&& y == targetPos[1]) {
             coordinates.push({ x,y, color: "limegreen" });
             paths.push({ x1: x1, y1: y1, x2: x, y2: y, color: "limegreen" });
           } else {
