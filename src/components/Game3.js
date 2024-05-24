@@ -4,21 +4,24 @@ import { Button, Col, Row } from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
 import swal from "sweetalert";
 
-function Game2({ X1, X2, Y1, Y2, setPage,transitType,isTimer,timer,totalLaps }) {
+function Game3({ X1, X2, Y1, Y2, setPage,transitType,isTimer,timer,totalLaps }) {
   const [step, setStep] = useState(0);
   const [carAngle, setCarAngle] = useState(0);
   const [carX, setCarX] = useState(0);
   const [carY, setCarY] = useState(0);
   const [lap, setLap] = useState(0);
-  const [inputX, setInputX] = useState(0);
-  const [inputY, setInputY] = useState(0);
+  const [isFlag, setIsFlag] = useState(false);
+
+  const [flagPos, setFlagPos] = useState([0, 0]);
+  // const [inputX, setInputX] = useState(0);
+  // const [inputY, setInputY] = useState(0);
   const [submitted, setSubmitted] = useState(false);
-  const [flagPos, setFlagPos] = useState(null);
+  const [targetPos, setTargetPos] = useState(null);
   const [paths, setPaths] = useState([]);
   const [coordinates, setCoordinates] = useState([]);
   const [tempPath, setTempPath] = useState(false);
-  const xInput = useRef(null);
-  const yInput = useRef(null);
+  // const xInput = useRef(null);
+  // const yInput = useRef(null);
   const [won, setWon] = useState(false);
   const [winTime, setWinTime] = useState(0);
   const [valid, setValid] = useState(true);
@@ -28,7 +31,7 @@ function Game2({ X1, X2, Y1, Y2, setPage,transitType,isTimer,timer,totalLaps }) 
   const [showPaths, setShowPaths] = useState(true);
   const [showCoordinates, setShowCoordinates] = useState(true);
 
-  // console.log("countDown",countDown);
+  // // // console.log("countDown",countDown);
   useEffect(() => {
     //Implementing the setInterval method
     const interval = setInterval(() => {
@@ -47,7 +50,7 @@ function Game2({ X1, X2, Y1, Y2, setPage,transitType,isTimer,timer,totalLaps }) 
   }, [step]);
 
   useEffect(() => {
-    handleSetflagPos();
+    handleSetTargetPos();
   }, []);
 
   ///////////////////////////////////////////____PARAMETERS___/////
@@ -55,12 +58,12 @@ function Game2({ X1, X2, Y1, Y2, setPage,transitType,isTimer,timer,totalLaps }) 
   const rotateTime = 500;
   const transitTime = 1000;
 
-  const handleSetflagPos = () => {
+  const handleSetTargetPos = () => {
     while (true) {
       let x = Math.floor(Math.random() * (X2 - X1) + X1);
       let y = Math.floor(Math.random() * (Y2 - Y1) + Y1);
       if (!coordinates.map((c) => [c.x, c.y]).includes([x, y])) {
-        setFlagPos([x, y]);
+        setTargetPos([x, y]);
         break;
       }
     }
@@ -94,10 +97,9 @@ function Game2({ X1, X2, Y1, Y2, setPage,transitType,isTimer,timer,totalLaps }) 
         if (time >= 2 * transitTime) {
           setTempPath(false);
           setIsCountDownPaused(false);
-          clearInterval(interval);
-          console.log("transit ends");
           setCarX(0)
           setCarY(0)
+          clearInterval(interval);
           resolve();
         }
         if (time < transitTime) {
@@ -122,7 +124,7 @@ function Game2({ X1, X2, Y1, Y2, setPage,transitType,isTimer,timer,totalLaps }) 
           if (time == transitTime) {
             setCarX(x);
             setCarAngle(Math.sign(y-y1)*90);
-            if (x == flagPos[0]) {
+            if (x == targetPos[0]) {
               coordinates.push({ x: x, y: y1, color: "limegreen" });
               paths.push({ x1: x1, y1: y1, x2: x, y2: y1, color: "limegreen" });
             } else {
@@ -132,7 +134,7 @@ function Game2({ X1, X2, Y1, Y2, setPage,transitType,isTimer,timer,totalLaps }) 
           }
           if (time == 2 * transitTime) {
             setCarY(y);
-            if (y == flagPos[1]) {
+            if (y == targetPos[1]) {
               coordinates.push({ x,y, color: "limegreen" });
               paths.push({ x1: x, y1: y1, x2: x, y2: y, color: "limegreen" });
             } else {
@@ -172,7 +174,9 @@ function Game2({ X1, X2, Y1, Y2, setPage,transitType,isTimer,timer,totalLaps }) 
         break;
     }
 
+    // // // console.log("x,y", x, y);
     await rotateCar(angle - carAngle);
+    // // // console.log("carAngle", carAngle);
     setCarAngle(angle);
     return new Promise((resolve) => {
       const interval = setInterval(() => {
@@ -190,8 +194,9 @@ function Game2({ X1, X2, Y1, Y2, setPage,transitType,isTimer,timer,totalLaps }) 
         if (time == transitTime) {
           setCarX(x);
           setCarY(y);
+          // // console.log("x,y", x, y,carX,carY);
 
-          if (x == flagPos[0], y == flagPos[1]) {
+          if (x == targetPos[0], y == targetPos[1]) {
             coordinates.push({ x,y, color: "limegreen" });
             paths.push({ x1: x1, y1: y1, x2: x, y2: y, color: "limegreen" });
           } else {
@@ -202,26 +207,24 @@ function Game2({ X1, X2, Y1, Y2, setPage,transitType,isTimer,timer,totalLaps }) 
       }, 100);
     });
   };
-  const handleSetInput = (value, setValue, min, max) => {
-    if(value=='-'){setValue('-');}
-    else{setValue((value));}
-    if (value > max ) {
-      setValue(max);
-    } else if (value < min) {
-      setValue(min);
-    } 
-    if (parseInt(value)==value || value !== '') {
-      setValid(true);
-    } else {
-      setValid(false);
-    } 
-  };
+  // const handleSetInput = (value, setValue, min, max) => {
+  //   setValue(parseInt(value));
+  //   if (value > max ) {
+  //     setValue(max);
+  //   } else if (value < min) {
+  //     setValue(min);
+  //   } else if (parseInt(value)==value || value !== '') {
+  //     setValid(true);
+  //   } else {
+  //     setValid(false);
+  //   } 
+  // };
   const handleSubmit = async () => {
     setIsCountDownPaused(true);
     let x1 = carX;
     let y1 = carY;
-    let x2 = parseInt(inputX);
-    let y2 = parseInt(inputY);
+    let x2 = flagPos[0];
+    let y2 = flagPos[1];
     setSubmitted(true);
     if(transitType==1){
       await translateCar1(x2, y2)
@@ -231,11 +234,12 @@ function Game2({ X1, X2, Y1, Y2, setPage,transitType,isTimer,timer,totalLaps }) 
       ;}
       else{
         await translateCar2(x2, y2)  
+        setCarX(x2);
+        setCarY(y2);
       }
       setTempPath(null)
-  //  setCarX(x2);
-  //   setCarY(y2);
-    if (x2 == flagPos[0] && y2 == flagPos[1]) {
+
+    if (x2 == targetPos[0] && y2 == targetPos[1]) {
       setTempPath(false);
       if (lap == totalLaps - 1) {
         setWinTime(step);
@@ -247,7 +251,7 @@ function Game2({ X1, X2, Y1, Y2, setPage,transitType,isTimer,timer,totalLaps }) 
           timer: 1000,
         });
         setLap(lap + 1);
-        handleSetflagPos();
+        handleSetTargetPos();
       }
       setLap(lap + 1);
     } else {
@@ -259,38 +263,9 @@ function Game2({ X1, X2, Y1, Y2, setPage,transitType,isTimer,timer,totalLaps }) 
     
     setSubmitted(false);
   };
-  const handleOnKeyDownX = (e) => {
-    if (
-      e.key === "ArrowRight" ||
-      e.key === "ArrowDown" ||
-      e.key === "Enter" ||
-      e.key === "ArrowLeft" ||
-      e.key === "ArrowUp"
-    ) {
-      e.preventDefault();
-      yInput.current.focus();
-      yInput.current.select();
-    }
-  };
-  const handleOnKeyDownY = (e) => {
-    if (
-      e.key === "ArrowLeft" ||
-      e.key === "ArrowUp" ||
-      e.key === "ArrowRight" ||
-      e.key === "ArrowDown"
-    ) {
-      // console.log("key", e.key);
-      e.preventDefault();
-      xInput.current.focus();
-      xInput.current.select();
-    }
-    if (e.key === "Enter") {
-      handleSubmit();
-    }
-  };
+
+
   const handleReset = () => {
-    setInputX(0);
-    setInputY(0);
     setCarX(0);
     setCarY(0);
     setCarAngle(0);
@@ -301,7 +276,7 @@ function Game2({ X1, X2, Y1, Y2, setPage,transitType,isTimer,timer,totalLaps }) 
     setCoordinates([]);
     setWon(false);
     setWinTime(0);
-    handleSetflagPos();
+    handleSetTargetPos();
     setIsTimeUp(false);
   };
   return (
@@ -318,17 +293,21 @@ function Game2({ X1, X2, Y1, Y2, setPage,transitType,isTimer,timer,totalLaps }) 
               carX={carX}
               carY={carY}
               carAngle={carAngle}
-              // flag={flagPos ? true : false}
+              // flag={targetPos ? true : false}           
               flagType={lap === totalLaps - 1 ? "final" : "white"}
               flagX={flagPos && flagPos[0]}
               flagY={flagPos && flagPos[1]}
+              setFlagX={(v)=>{setFlagPos((prev) => ({ ...prev, 0: v }))}}
+              setFlagY={(v)=>{setFlagPos((prev) => ({ ...prev, 1: v }))}}
+              isClickable={true}
               coordinates={showCoordinates?coordinates:[]}
               paths={showPaths?[...paths, tempPath]:[]}
+
             ></Graph>
           </div>
         </Col>
         <Col lg={4}>
-          <Row className="pt-lg-5">
+          <Row className="pt-lg-5 ">
             <Col
               lg={12}
               xs={4}
@@ -366,54 +345,19 @@ function Game2({ X1, X2, Y1, Y2, setPage,transitType,isTimer,timer,totalLaps }) 
                 {" "}
                 {lap}/{totalLaps}
               </h1>
-
             </Col>
             <Col xs={12}
               className="d-flex justify-content-center align-items-center " >
-            <small className="text-white fs-6">(Enter the flag position and hit Go!)</small>
+            <small className="text-white fs-6">(Place the flag and hit Go!)</small>
 
             </Col>
-
+                    
             <Col
               xs={12}
+              
               className="d-flex justify-content-center align-items-center mt-2"
             >
-              <h1 className="text-white">x</h1>
-              <h2 className="text-white">:&nbsp;</h2>
-              <input
-                type="number"
-                className="form-control small-input"
-                value={inputX}
-                onChange={(e) =>
-                  handleSetInput(e.target.value, setInputX,X1 , X2)
-                }
-                onClick={(e) => {
-                  e.target.select();
-                }}
-                onKeyDown={handleOnKeyDownX}
-                ref={xInput}
-                min={X1}
-                max={X2}
-              />
-            &nbsp;&nbsp;
-              <h1 className="text-white">y</h1>
-              <h2 className="text-white">:&nbsp;</h2>
-              <input
-                type="number"
-                className="form-control small-input"
-                value={inputY}
-                onChange={(e) =>
-                  handleSetInput(e.target.value, setInputY, Y1, Y2)
-                }
-                onClick={(e) => {
-                  e.target.select();
-                }}
-                ref={yInput}
-                onKeyDown={handleOnKeyDownY}
-                min={Y1}
-                max={Y2}
-              />
-            
+              <p className="text-white fs-1">Go to ({targetPos?.[0]}, {targetPos?.[1]})</p>
               <Button
                 variant="warning"
                 disabled={submitted || !valid}
@@ -470,7 +414,6 @@ function Game2({ X1, X2, Y1, Y2, setPage,transitType,isTimer,timer,totalLaps }) 
                 Clear<br/>coordinates
               </Button>
             </Col>
-            
           </Row>
         </Col>
       </Row>
@@ -530,4 +473,4 @@ function Game2({ X1, X2, Y1, Y2, setPage,transitType,isTimer,timer,totalLaps }) 
   );
 }
 
-export default Game2;
+export default Game3;
