@@ -37,9 +37,9 @@ function App() {
           <Button variant="warning" onClick={() => setPage("game1")}>
             Learn
           </Button>
-          <Button variant="warning" onClick={() => setPage("game2")}>
+          {/* <Button variant="warning" onClick={() => setPage("game2")}>
             Play<br/><span className="fs-6">Follow the flags</span>
-          </Button>
+          </Button> */}
           <Button variant="warning" onClick={() => setPage("game3")}>
             Play <br/><span className="fs-6">Follow the co-ordinates</span>
           </Button>
